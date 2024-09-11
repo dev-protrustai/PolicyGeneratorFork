@@ -1,3 +1,7 @@
+__import__('sqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('sqlite3')
+
 import streamlit as st
 from langchain_community.document_loaders import WebBaseLoader
 from chains import Chain
