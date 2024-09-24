@@ -10,9 +10,14 @@ from utils import clean_text
 
 
 def create_streamlit_app(llm, portfolio, clean_text):
-    st.title("📧 Cold Mail Generator")
+    st.title("Policy Generator")
     #url_input = st.text_input("Enter a URL:", value="https://jobs.nike.com/job/R-33460")
     url_input = st.text_input("Paste your link here:")
+    location_input = st.text_input("customer location: for example EU")
+    data_collection_input = st.multiselect('what data users collect', ["Log and Usage Data","Device Data","Location Data"])
+    user_control_right_input = st.text_input("enter your user control right here")
+    company_sharing_level_input = st.selectbox('how the company uses those data ', ["All parties","Limited third parties"])
+    default_link = None
     submit_button = st.button("Submit")
 
     if submit_button:
@@ -33,7 +38,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 if __name__ == "__main__":
     chain = Chain()
     portfolio = Portfolio()
-    st.set_page_config(layout="wide", page_title="Cold Email Generator", page_icon="📧")
+    st.set_page_config(layout="wide", page_title="Policy Generator", page_icon="📧")
     create_streamlit_app(chain, portfolio, clean_text)
 
 
