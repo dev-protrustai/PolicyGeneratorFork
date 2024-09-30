@@ -37,7 +37,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
         disabled=not pdf_doc,
     )
     if pdf_doc and question:
-        ans = process_pdf(llm,pdf_doc,question)
+        ans = process_pdf(llm.llm,pdf_doc,question)
 
         # Process the uploaded file and question.
         # document = uploaded_file.read().decode()
@@ -56,7 +56,8 @@ def create_streamlit_app(llm, portfolio, clean_text):
         # )
 
         # Stream the response to the app using `st.write_stream`.
-        st.write_stream(ans)
+        # print(ans)
+        st.write(ans)
     if submit_button:
         try:
             loader = WebBaseLoader([url_input])

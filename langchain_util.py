@@ -1,9 +1,9 @@
-# from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 
 from langchain_core.prompts import (
     ChatPromptTemplate,
 )
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import faiss
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
@@ -12,6 +12,8 @@ from uuid import uuid4
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
+import tempfile
+import os
 
 # def load_file(file_path):
 
@@ -51,11 +53,27 @@ from langchain_core.prompts import ChatPromptTemplate
     # chain_extract = prompt_extract | llm 
     # res = chain_extract.invoke(input={'page_data':page_data})
 
+
+def get_pdf_text(pdf_docs):
+    docs=[]
+    # for pdf in pdf_docs:
+    temp_dir = tempfile.mkdtemp()
+    path = os.path.join(temp_dir, pdf_docs.name)
+    with open(path, "wb") as f:
+            f.write(pdf_docs.getvalue())
+    loader = PyPDFLoader(path)
+    docs=loader.load_and_split()
+    # print(docs)
+    return  docs
+
 def process_pdf(llm,pdf_doc,question):
     # loader = PyPDFLoader(file_path)
+    # docs = uploaded_file.getvalue().decode("utf-8")
+    # print(pdf_doc)
+    # print(pdf_doc.getvalue())
 
-    docs = pdf_doc.getvalue()
 
+    docs = get_pdf_text(pdf_doc)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
