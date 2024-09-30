@@ -7,7 +7,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from chains import Chain
 from portfolio import Portfolio
 from utils import clean_text
-
+from langchain_util import process_pdf
 
 def create_streamlit_app(llm, portfolio, clean_text):
     st.title("Policy Generator")
@@ -22,7 +22,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
     with st.sidebar:
         st.title("Upload your PDF files here:")
-        pdf_docs = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=True)
+        pdf_doc = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=False)
         if st.button("Submit & Process"):
             with st.spinner("Processing..."):
                 # docs = get_pdf_text(pdf_docs)
@@ -34,10 +34,11 @@ def create_streamlit_app(llm, portfolio, clean_text):
     question = st.text_area(
         "Now ask a question about the document!",
         placeholder="Can you give me a short summary?",
-        disabled=not pdf_docs,
+        disabled=not pdf_doc,
     )
-    if pdf_docs and question:
-        pass
+    if pdf_doc and question:
+        ans = process_pdf(llm,pdf_doc,question)
+
         # Process the uploaded file and question.
         # document = uploaded_file.read().decode()
         # messages = [
@@ -55,8 +56,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
         # )
 
         # Stream the response to the app using `st.write_stream`.
-        # st.write_stream(stream)
-
+        st.write_stream(ans)
     if submit_button:
         try:
             loader = WebBaseLoader([url_input])
