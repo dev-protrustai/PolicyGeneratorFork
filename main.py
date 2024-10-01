@@ -36,8 +36,20 @@ def create_streamlit_app(llm, portfolio, clean_text):
         placeholder="Can you give me a short summary?",
         disabled=not pdf_doc,
     )
+
+    system_prompt = st.text_area(
+        "(Optional) Input your experiment system prompt",
+        placeholder = "You are an assistant for question-answering tasks. "
+        "Use the following pieces of retrieved context to answer "
+        "the question. If you don't know the answer, say that you "
+        "don't know. Use three sentences maximum and keep the "
+        "answer concise."
+        "\n\n"
+        "{context}",
+        disabled=not pdf_doc,
+    )
     if pdf_doc and question:
-        ans = process_pdf(llm.llm,pdf_doc,question)
+        ans = process_pdf(llm.llm,pdf_doc,question,system_prompt)
 
         # Process the uploaded file and question.
         # document = uploaded_file.read().decode()

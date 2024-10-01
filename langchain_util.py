@@ -66,7 +66,7 @@ def get_pdf_text(pdf_docs):
     # print(docs)
     return  docs
 
-def process_pdf(llm,pdf_doc,question):
+def process_pdf(llm,pdf_doc,question,input_system_prompt):
     # loader = PyPDFLoader(file_path)
     # docs = uploaded_file.getvalue().decode("utf-8")
     # print(pdf_doc)
@@ -106,9 +106,11 @@ def process_pdf(llm,pdf_doc,question):
         "\n\n"
         "{context}"
     )
+    # print(input_system_prompt == "")
+    final_system_prompt = input_system_prompt if input_system_prompt != "" else system_prompt
     prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", system_prompt),
+            ("system", final_system_prompt),
             ("human", "{input}"),
         ]
     )

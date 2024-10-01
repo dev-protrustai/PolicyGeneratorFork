@@ -49,7 +49,32 @@ class Chain:
 
             """
         )
+        print (job)
         chain_email = prompt_email | self.llm
+        res = chain_email.invoke({"job_description": str(job), "link_list": links})
+        return res.content
+    
+    def write_policy_template(self, job, links):
+        prompt_policy_template = PromptTemplate.from_template(
+            """
+
+                You are XYZ, a policy review writer . 
+                Your job is to write a website policy to stay compliant.  
+                There will be one section named policy section.
+                Under this section there is one <paragraph>
+
+                Use the following pieces of retrieved context to fill <paragraph> in bold text.
+                
+                If you don't know the answer, say that you
+                don't know. Use three sentences maximum and keep <paragraph> in bold text concise.
+
+
+                {context}
+
+
+            """
+        )
+        chain_email = prompt_policy_template | self.llm
         res = chain_email.invoke({"job_description": str(job), "link_list": links})
         return res.content
     
