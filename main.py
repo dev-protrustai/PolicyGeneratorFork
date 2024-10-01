@@ -10,15 +10,17 @@ from utils import clean_text
 from langchain_util import process_pdf
 
 def create_streamlit_app(llm, portfolio, clean_text):
-    st.title("Policy Generator")
+    st.title("Email Generator")
     #url_input = st.text_input("Enter a URL:", value="https://jobs.nike.com/job/R-33460")
-    url_input = st.text_input("Paste your link here:")
-    location_input = st.text_input("customer location: for example EU")
-    data_collection_input = st.multiselect('what data users collect', ["Log and Usage Data","Device Data","Location Data"])
-    user_control_right_input = st.text_input("enter your user control right here")
-    company_sharing_level_input = st.selectbox('how the company uses those data ', ["All parties","Limited third parties"])
-    default_link = None
-    submit_button = st.button("Submit")
+    url_input = st.text_input("Paste your link here:",value = "https://jobs.nike.com/job/R-35349" )
+    # location_input = st.text_input("customer location: for example EU")
+    # data_collection_input = st.multiselect('what data users collect', ["Log and Usage Data","Device Data","Location Data"])
+    # user_control_right_input = st.text_input("enter your user control right here")
+    # company_sharing_level_input = st.selectbox('how the company uses those data ', ["All parties","Limited third parties"])
+    # default_link = None
+    submit_button = st.button("Email Generator Submit")
+
+    st.title("Check sidebar and upload template for Policy Generator")
 
     with st.sidebar:
         st.title("Upload your PDF files here:")
@@ -39,7 +41,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
     system_prompt = st.text_area(
         "(Optional) Input your experiment system prompt",
-        placeholder = "You are an assistant for question-answering tasks. "
+        value = "You are an assistant for question-answering tasks. "
         "Use the following pieces of retrieved context to answer "
         "the question. If you don't know the answer, say that you "
         "don't know. Use three sentences maximum and keep the "
