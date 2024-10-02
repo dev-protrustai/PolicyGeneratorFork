@@ -40,9 +40,9 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
     with st.sidebar:
         st.title("Upload your PDF files here:")
-        pdf_doc = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=False)
+        pdf_docs = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=True)
         if st.button("Submit & Process"):
-            st.session_state.retriever = process_pdf(pdf_doc)
+            st.session_state.retriever = process_pdf(pdf_docs)
 
             with st.spinner("Processing..."):
                 # docs = get_pdf_text(pdf_docs)

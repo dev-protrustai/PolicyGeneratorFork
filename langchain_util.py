@@ -57,24 +57,25 @@ import os
 def get_pdf_text(pdf_docs):
     docs=[]
     # for pdf in pdf_docs:
-    temp_dir = tempfile.mkdtemp()
-    path = os.path.join(temp_dir, pdf_docs.name)
-    with open(path, "wb") as f:
-            f.write(pdf_docs.getvalue())
-    loader = PyPDFLoader(path)
-    docs=loader.load_and_split()
+    for pdf in pdf_docs:
+        temp_dir = tempfile.mkdtemp()
+        path = os.path.join(temp_dir, pdf.name)
+        with open(path, "wb") as f:
+                f.write(pdf.getvalue())
+        loader = PyPDFLoader(path)
+        docs=docs+loader.load_and_split()
     # print(docs)
     return  docs
 
 
-def process_pdf(pdf_doc):
+def process_pdf(pdf_docs):
     # loader = PyPDFLoader(file_path)
     # docs = uploaded_file.getvalue().decode("utf-8")
     # print(pdf_doc)
     # print(pdf_doc.getvalue())
 
 
-    docs = get_pdf_text(pdf_doc)
+    docs = get_pdf_text(pdf_docs)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
