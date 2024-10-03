@@ -74,7 +74,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
     # version2
 
-    if prompt := st.chat_input("Upload your pdfs and Ask the question about the doc...", disabled=not pdf_docs):
+    if prompt := st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user", avatar='😃'):
