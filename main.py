@@ -151,9 +151,24 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
 
 if __name__ == "__main__":
+
+    # m = st.markdown("""
+    # <style>
+    # div.stButton > button:first-child {
+    #     background-color: rgb(204, 49, 49);
+    # }
+    # </style>""", unsafe_allow_html=True)
+
+
     chain = Chain()
     portfolio = Portfolio()
-    st.set_page_config(layout="wide", page_title="Policy Generator", page_icon="📧")
+    # st.set_page_config()
+    st.set_page_config(
+        page_title="Policy Generator",
+        page_icon="👋",
+        layout="wide", 
+    )
+
 
     ## version2
     # Initialize chat history and selected model
