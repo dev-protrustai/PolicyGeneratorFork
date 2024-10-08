@@ -1,5 +1,6 @@
 import os
 from langchain_groq import ChatGroq
+from langchain_together import ChatTogether
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.exceptions import OutputParserException
@@ -8,9 +9,29 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Chain:
-    def __init__(self):
-        self.llm = ChatGroq(temperature=0, groq_api_key=os.getenv("GROQ_API_KEY"), model_name="llama-3.1-70b-versatile")
+    def __init__(self,model=None):
+        if model == "toghther":
+            self.llm = ChatTogether(
+                model="meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
+                temperature=0,
+                max_tokens=None,
+                timeout=None,
+                max_retries=2,
+                api_key=os.getenv("TOGETHER_API_KEY")
+            )
+        else:
+            self.llm = ChatGroq(temperature=0, groq_api_key=os.getenv("GROQ_API_KEY"), model_name="llama-3.1-70b-versatile")
 
+    def getToghtherChain(self):
+        self.llm = ChatTogether(
+                model="meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
+                temperature=0,
+                max_tokens=None,
+                timeout=None,
+                max_retries=2,
+                api_key=os.getenv("TOGETHER_API_KEY")
+            )
+        return self.llm
     def extract_jobs(self, cleaned_text):
         prompt_extract = PromptTemplate.from_template(
             """

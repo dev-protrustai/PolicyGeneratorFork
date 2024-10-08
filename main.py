@@ -41,15 +41,20 @@ def create_streamlit_app(llm, portfolio, clean_text):
     with st.sidebar:
         st.title("Upload your PDF files here:")
         pdf_docs = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=True)
+        image = st.file_uploader("You may upload image files. Click on the Submit & Process Button")
+        breakToken = True
+
+
         if st.button("Submit & Process"):
             st.session_state.retriever = process_pdf(pdf_docs)
-
+            # st.write(image._file_urls.upload_url)
             with st.spinner("Processing..."):
                 # docs = get_pdf_text(pdf_docs)
                 # text_chunks = get_text_chunks(docs)
                 # get_vector_store(text_chunks,GOOGLEPALM_API_KEY)
                 st.success("Done")
-
+        if st.button("remove image"):
+            breakToken = None
     # version1
     # Ask the user for a question via `st.text_area`.
     # question = st.text_area(
@@ -73,19 +78,42 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
 
     # version2
+    if image and breakToken:
+        image_url3 = "https://www.invoiceowl.com/wp-content/uploads/2023/03/notary-invoice-template.svg"
+        image_prompt = {
+                        "type": "image_url",
+                        "image_url": {
+                                "url": image_url3
+                        }
+                }
 
     if prompt := st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs):
-        st.session_state.messages.append({"role": "user", "content": prompt})
+      
+        if image and breakToken:
+            test_prompt = {
+                "type": "text",
+                "text": prompt
+            }
+            image_prompt = [test_prompt] + [image_prompt]
+            print({"role": "user", "content": image_prompt})
+            print(breakToken)
+            print("yew")
+            st.session_state.messages.append({"role": "user", "content": image_prompt})
+        else:
+            st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user", avatar='😃'):
             st.markdown(prompt)
 
         # Fetch response from Groq API
         try:
-
-            rag_chain = get_rag_chain(llm.llm, st.session_state.retriever)
-            result = rag_chain.invoke({"input": prompt, "chat_history": get_chat_history()})
-            chat_completion = result["answer"]
+            if image and breakToken:
+                response = llm.getToghtherChain().invoke(get_chat_history())
+                chat_completion = response.content
+            else:
+                rag_chain = get_rag_chain(llm.llm, st.session_state.retriever)
+                result = rag_chain.invoke({"input": prompt, "chat_history": get_chat_history()})
+                chat_completion = result["answer"]
             # Use the generator function with st.write_stream
             with st.chat_message("assistant", avatar="📖"):
                 # chat_responses_generator = generate_chat_responses(chat_completion)

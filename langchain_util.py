@@ -61,7 +61,7 @@ def get_pdf_text(pdf_docs):
         temp_dir = tempfile.mkdtemp()
         path = os.path.join(temp_dir, pdf.name)
         with open(path, "wb") as f:
-                f.write(pdf.getvalue())
+            f.write(pdf.getvalue())
         loader = PyPDFLoader(path)
         docs=docs+loader.load_and_split()
     # print(docs)
