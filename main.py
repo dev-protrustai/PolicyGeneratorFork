@@ -42,7 +42,6 @@ def create_streamlit_app(llm, portfolio, clean_text):
         st.title("Upload your PDF files here:")
         pdf_docs = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=True)
         image = st.file_uploader("You may upload image files. Click on the Submit & Process Button")
-        breakToken = True
 
 
         if st.button("Submit & Process"):
@@ -53,8 +52,6 @@ def create_streamlit_app(llm, portfolio, clean_text):
                 # text_chunks = get_text_chunks(docs)
                 # get_vector_store(text_chunks,GOOGLEPALM_API_KEY)
                 st.success("Done")
-        if st.button("remove image"):
-            breakToken = None
     # version1
     # Ask the user for a question via `st.text_area`.
     # question = st.text_area(
@@ -78,26 +75,24 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
 
     # version2
-    if image and breakToken:
-        image_url3 = "https://www.invoiceowl.com/wp-content/uploads/2023/03/notary-invoice-template.svg"
-        image_prompt = {
-                        "type": "image_url",
-                        "image_url": {
-                                "url": image_url3
-                        }
-                }
-
+    if st.button("image_test"):
+        st.session_state['image_test'] = True
     if prompt := st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs):
       
-        if image and breakToken:
+        if st.session_state['image_test']:
+
+            image_url3 = "https://www.invoiceowl.com/wp-content/uploads/2023/03/notary-invoice-template.svg"
+            image_prompt = {
+                            "type": "image_url",
+                            "image_url": {
+                                    "url": image_url3
+                            }
+                    }
             test_prompt = {
                 "type": "text",
                 "text": prompt
             }
             image_prompt = [test_prompt] + [image_prompt]
-            print({"role": "user", "content": image_prompt})
-            print(breakToken)
-            print("yew")
             st.session_state.messages.append({"role": "user", "content": image_prompt})
         else:
             st.session_state.messages.append({"role": "user", "content": prompt})
@@ -107,7 +102,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
         # Fetch response from Groq API
         try:
-            if image and breakToken:
+            if st.session_state['image_test']:
                 response = llm.getToghtherChain().invoke(get_chat_history())
                 chat_completion = response.content
             else:
