@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 
-st.title("Let's begin to generate a template GDPR policy")
+st.title("Let's begin to generate a GDPR policy")
 
 
 
