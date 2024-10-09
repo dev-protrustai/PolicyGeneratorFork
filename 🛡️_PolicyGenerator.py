@@ -91,15 +91,15 @@ def create_streamlit_app(llm, portfolio, clean_text):
         "User demographic",
         "Consent process review",
         "Retention and deletion",
-        "The famous 'Black Lotus' card",
-        "Wizard card with Vigiliance ability",
+        "Other privacy specific",
+        "Other security specific",
     ]
 
     example_prompts_help = [
-        "Look for a specific card effect",
-        "Search for card type: 'Vampires', card color: 'black', and ability: 'flying'",
-        "Color cards and card type",
-        "Specifc card effect to another mana color",
+        "Data handling",
+        "User demographic",
+        "Consent process review",
+        "Retention and deletion",
         "Other privacy specific",
         "Other security specific",
     ]
@@ -126,7 +126,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
     # version2
 
-    if prompt := (st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs) or button_pressed):
+    if prompt := (st.chat_input(placeholder="Search or ask a compliance question...", disabled=not pdf_docs) or button_pressed):
       
         if st.session_state['image_test']:
 
