@@ -225,7 +225,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="PolicyGenerator",
+        page_title="PrivacyGPT",
         page_icon="🛡️",
         layout="wide", 
     )
