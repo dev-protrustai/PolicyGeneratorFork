@@ -16,6 +16,13 @@ def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
     for chunk in chat_completion:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
+def display_chat_messages():
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        avatar = '📖' if message["role"] == "assistant" else '😃'
+        with st.chat_message(message["role"], avatar=avatar):
+            st.markdown(message["content"])
+
 def get_chat_history():
     messages=[
             {
@@ -41,8 +48,6 @@ def create_streamlit_app(llm, portfolio, clean_text):
     with st.sidebar:
         st.title("Upload your PDF files here:")
         pdf_docs = st.file_uploader("You may upload multiple files. Click on the Submit & Process Button", accept_multiple_files=True)
-        image = st.file_uploader("You may upload image files. Click on the Submit & Process Button")
-
 
         if st.button("Submit & Process"):
             st.session_state.retriever = process_pdf(pdf_docs)
@@ -52,6 +57,12 @@ def create_streamlit_app(llm, portfolio, clean_text):
                 # text_chunks = get_text_chunks(docs)
                 # get_vector_store(text_chunks,GOOGLEPALM_API_KEY)
                 st.success("Done")
+        if st.button("Paid Feature for image processing"):
+            st.session_state['image_test'] = True
+        if st.session_state['image_test']:
+            image = st.file_uploader("You may upload image files. Click on the Submit & Process Button")
+
+
     # version1
     # Ask the user for a question via `st.text_area`.
     # question = st.text_area(
@@ -72,12 +83,50 @@ def create_streamlit_app(llm, portfolio, clean_text):
     #     disabled=not pdf_doc,
     # )
 
+    # Example prompts
+    # Display chat messages from history on app rerun
+    display_chat_messages()
+    example_prompts = [
+        "Data handling",
+        "User demographic",
+        "Consent process review",
+        "Retention and deletion",
+        "The famous 'Black Lotus' card",
+        "Wizard card with Vigiliance ability",
+    ]
+
+    example_prompts_help = [
+        "Look for a specific card effect",
+        "Search for card type: 'Vampires', card color: 'black', and ability: 'flying'",
+        "Color cards and card type",
+        "Specifc card effect to another mana color",
+        "Other privacy specific",
+        "Other security specific",
+    ]
+
+    button_cols = st.columns(3)
+    button_cols_2 = st.columns(3)
+
+    button_pressed = ""
+
+    if button_cols[0].button(example_prompts[0], help=example_prompts_help[0],disabled=not pdf_docs):
+        button_pressed = example_prompts[0]
+    elif button_cols[1].button(example_prompts[1], help=example_prompts_help[1],disabled=not pdf_docs):
+        button_pressed = example_prompts[1]
+    elif button_cols[2].button(example_prompts[2], help=example_prompts_help[2],disabled=not pdf_docs):
+        button_pressed = example_prompts[2]
+
+    elif button_cols_2[0].button(example_prompts[3], help=example_prompts_help[3],disabled=not pdf_docs):
+        button_pressed = example_prompts[3]
+    elif button_cols_2[1].button(example_prompts[4], help=example_prompts_help[4],disabled=not pdf_docs):
+        button_pressed = example_prompts[4]
+    elif button_cols_2[2].button(example_prompts[5], help=example_prompts_help[5],disabled=not pdf_docs):
+        button_pressed = example_prompts[5]
 
 
     # version2
-    if st.button("image_test"):
-        st.session_state['image_test'] = True
-    if prompt := st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs):
+
+    if prompt := (st.chat_input(placeholder="Search or ask a question...", disabled=not pdf_docs) or button_pressed):
       
         if st.session_state['image_test']:
 
@@ -131,6 +180,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
             st.session_state.messages.append(
                 {"role": "assistant", "content": combined_response})
 
+        st.rerun()
 
 
 
@@ -174,7 +224,11 @@ def create_streamlit_app(llm, portfolio, clean_text):
 
 
 if __name__ == "__main__":
-
+    st.set_page_config(
+        page_title="PolicyGenerator",
+        page_icon="🛡️",
+        layout="wide", 
+    )
     # m = st.markdown("""
     # <style>
     # div.stButton > button:first-child {
@@ -186,11 +240,7 @@ if __name__ == "__main__":
     chain = Chain()
     portfolio = Portfolio()
     # st.set_page_config()
-    st.set_page_config(
-        page_title="Policy Generator",
-        page_icon="👋",
-        layout="wide", 
-    )
+
 
 
     ## version2
@@ -198,11 +248,8 @@ if __name__ == "__main__":
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.retriever = None
-    # Display chat messages from history on app rerun
-    for message in st.session_state.messages:
-        avatar = '📖' if message["role"] == "assistant" else '😃'
-        with st.chat_message(message["role"], avatar=avatar):
-            st.markdown(message["content"])
+        st.session_state.image_test = False
+
 
     create_streamlit_app(chain, portfolio, clean_text)
 
