@@ -57,8 +57,8 @@ def create_streamlit_app(llm, portfolio, clean_text):
                 # text_chunks = get_text_chunks(docs)
                 # get_vector_store(text_chunks,GOOGLEPALM_API_KEY)
                 st.success("Done")
-        if st.button("Paid Feature for image processing"):
-            st.session_state['image_test'] = True
+        # if st.button("Paid Feature for image processing"):
+        #     st.session_state['image_test'] = False
         if st.session_state['image_test']:
             image = st.file_uploader("You may upload image files. Click on the Submit & Process Button")
 
