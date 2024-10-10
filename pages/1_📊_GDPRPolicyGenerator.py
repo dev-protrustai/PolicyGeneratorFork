@@ -64,8 +64,10 @@ genre5 = st.radio(
     ["Yes", "No"],
     index=None,
 )
-
+with open("./resource/Privacy_Policy_Template_Google.docx", "rb") as file:
+    st.download_button("Download Google Doc", data=file, file_name="Privacy_Policy_Template_Google.docx", mime="docx")
 if st.button("Submit to view the report"):
+    
     st.write(f"Contact us for a free consultation https://calendly.com/clare_hsu/30min")
 
 #     ## Order of passing the data into the pipeline:
