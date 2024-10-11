@@ -56,7 +56,17 @@ import os
 
 def get_pdf_text(pdf_docs):
     docs=[]
-    # for pdf in pdf_docs:
+    # print(pdf_docs)
+    if len(pdf_docs) == 1:
+        pdf = pdf_docs[0]
+        temp_dir = tempfile.mkdtemp()
+        path = os.path.join(temp_dir, pdf.name)
+        with open(path, "wb") as f:
+            f.write(pdf.getvalue())
+        loader = PyPDFLoader(path)
+        docs=loader.load_and_split()
+        return docs
+
     for pdf in pdf_docs:
         temp_dir = tempfile.mkdtemp()
         path = os.path.join(temp_dir, pdf.name)
@@ -76,8 +86,8 @@ def process_pdf(pdf_docs):
 
 
     docs = get_pdf_text(pdf_docs)
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    splits = text_splitter.split_documents(docs)
+    # text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    # splits = text_splitter.split_documents(docs)
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
                                         model_kwargs={'device':'cpu'})
     # Create vectors
