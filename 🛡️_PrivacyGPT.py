@@ -9,8 +9,25 @@ from portfolio import Portfolio
 from utils import clean_text
 from langchain_util import process_pdf,get_rag_chain
 from typing import Generator
+from google.oauth2 import service_account
+import gspread
+from datetime import datetime
 
 
+def append_to_sheet(prompt, generated, answer):
+    """
+    Add to GSheet
+    """
+    credentials = service_account.Credentials.from_service_account_file(
+        st.secrets["GCP_SERVICE_JSON"],
+        scopes=["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/drive']
+    )
+    gc = gspread.authorize(credentials)
+    sh = gc.open_by_url(st.secrets["PRIVATE_GSHEETS_URL"])
+
+    worksheet = sh.get_worksheet(0) # Assuming you want to write to the first sheet
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    worksheet.append_row([current_time,prompt, generated, answer])
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
     """Yield chat response content from the Groq API response."""
     for chunk in chat_completion:
@@ -163,6 +180,8 @@ def create_streamlit_app(llm, portfolio, clean_text):
                 # chat_responses_generator = generate_chat_responses(chat_completion)
                 # full_response = st.write_stream(chat_responses_generator)
                 st.write(chat_completion)
+                append_to_sheet(prompt, True, chat_completion)
+
                 full_response = chat_completion
                 # print("full_response",full_response)
 
